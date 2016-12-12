@@ -105,8 +105,8 @@ class invoice(osv.osv):
                         "document_number": inv.partner_id.document_number,
                         "responsability": responsability_map.get(inv.partner_id.responsability_id.code, "F"),
                     },
-                    "related_document": (picking_obj.search_read(cr, uid, [('origin','=',inv.origin)], ["name"]) +
-                                         [{'name': _("No picking")}])[0]['name'],
+                    #"related_document": (picking_obj.search_read(cr, uid, [('origin','=',inv.origin or '')], ["name"]) +
+                    #                    [{'name': _("No picking")}])[0]['name'],
                     "related_document_2": inv.origin or "",
                     "turist_check": "",
                     "lines": [ ],
@@ -122,6 +122,9 @@ class invoice(osv.osv):
                     "tail_no_3": 0,
                     "tail_text_3": "",
                 }
+		if picking_obj:
+			ticket['related_document'] = (picking_obj.search_read(cr, uid, [('origin','=',inv.origin or '')], ["name"]) +\
+				 [{'name': _("No picking")}])[0]['name']	
                 for line in inv.invoice_line:
                     ticket["lines"].append({
                         "item_action": "sale_item",
@@ -165,7 +168,7 @@ class invoice(osv.osv):
                 r = journal.make_fiscal_ticket(ticket)[inv.journal_id.id]
 
         if r and 'error' not in r:
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             return True
         elif r and 'error' in r:
             raise osv.except_osv(_(u'Cancelling Validation'),
