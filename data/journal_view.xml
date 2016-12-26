@@ -36,6 +36,8 @@
 			    <field name='fiscal_printer_fiscal_state'/>
 			    <field name='fiscal_printer_paper_state'/>
 			    <field name='fiscal_printer_items_generated'/>
+			    <field name='last_a_sale_document_completed'/>
+			    <field name='last_b_sale_document_completed'/>
 			    </group>
 			</page>
 		</notebook>
