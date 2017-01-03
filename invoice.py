@@ -174,8 +174,11 @@ class invoice(osv.osv):
             raise osv.except_osv(_(u'Cancelling Validation'),
                                  _('Error: %s') % r['error'])
         else:
-            raise osv.except_osv(_(u'Cancelling Validation'),
-                                 _(u'Unknown error.'))
+	    if inv.journal_id.use_fiscal_printer:
+	            raise osv.except_osv(_(u'Cancelling Validation'),
+        	                         _(u'Unknown error.'))
+	    else:
+	            return True
 
 invoice()
 
