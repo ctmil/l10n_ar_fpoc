@@ -88,7 +88,7 @@ class invoice(osv.osv):
             raise osv.except_osv(_(u'Cancelling Validation'),
                                  _(u'Please, validate one ticket at time.'))
             return False
-
+	
         for inv in self.browse(cr, uid, ids, context):
             if inv.journal_id.use_fiscal_printer:
                 journal = inv.journal_id
@@ -125,6 +125,8 @@ class invoice(osv.osv):
 		if picking_obj:
 			ticket['related_document'] = (picking_obj.search_read(cr, uid, [('origin','=',inv.origin or '')], ["name"]) +\
 				 [{'name': _("No picking")}])[0]['name']	
+		if inv.origin:
+		    ticket['origin_document'] = inv.origin
                 for line in inv.invoice_line:
                     ticket["lines"].append({
                         "item_action": "sale_item",
@@ -165,7 +167,18 @@ class invoice(osv.osv):
                         "taxes_rate": 0
                     })
 
-                r = journal.make_fiscal_ticket(ticket)[inv.journal_id.id]
+		#import pdb;pdb.set_trace()
+		if inv.type == 'out_invoice':	
+	                r = journal.make_fiscal_ticket(ticket)[inv.journal_id.id]
+		if inv.type == 'out_refund':
+			if 'payments' not in ticket.keys():
+				ticket['payments'] = [{
+					'extra_description': '',
+					'amount': inv.amount_total,
+					'type': 'pay',
+					'description': 'Cuenta corriente del cliente'
+					}]
+	                r = journal.make_fiscal_refund_ticket(ticket)[inv.journal_id.id]
 
         if r and 'error' not in r:
             #import pdb; pdb.set_trace()
