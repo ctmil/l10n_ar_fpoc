@@ -10,6 +10,7 @@ _schema = logging.getLogger(__name__ + '.schema')
 class account_journal(osv.osv):
 
     def _get_fp_items_generated(self, cr, uid, ids, fields_name, arg, context=None):
+	import pdb;pdb.set_trace()
         context = context or {}
         r = {}
         for jou in self.browse(cr, uid, ids, context):
@@ -57,9 +58,9 @@ class account_journal(osv.osv):
 
     _columns = {
         'use_fiscal_printer': fields.boolean('Associated to a fiscal printer'),
-
-        'fiscal_printer_items_generated': fields.function(_get_fp_items_generated, type='integer', string='Number of Invoices Generated',method=True, 
-                            help="Check how many invoices was generated in the printer.", readonly=True),
+	'point_of_sale': fields.char('Punto de venta'),
+        #'fiscal_printer_items_generated': fields.function(_get_fp_items_generated, type='integer', string='Number of Invoices Generated',method=True, 
+        #                    help="Check how many invoices was generated in the printer.", readonly=True),
         'last_a_sale_document_completed': fields.function(_get_last_a_sale_document_completed, type='integer', string='Number of A Invoices Generated',
 				method=True,   help="Check how many invoices A  were generated in the printer.", readonly=True),
         'last_b_sale_document_completed': fields.function(_get_last_b_sale_document_completed, type='integer', string='Number of B Invoices Generated',
