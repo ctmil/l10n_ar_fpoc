@@ -178,12 +178,19 @@ class invoice(osv.osv):
 					'type': 'pay',
 					'description': 'Cuenta corriente del cliente'
 					}]
+			if not ticket['debit_note']:
+				ticket['debit_note'] = ''
+			if not ticket['turist_ticket']:
+				ticket['turist_ticket'] = ''
+			if not ticket['current_account_automatic_pay']:
+				ticket['current_accountautomatic_pay'] = ''
 	                r = journal.make_fiscal_refund_ticket(ticket)[inv.journal_id.id]
 
         if r and 'error' not in r:
             #import pdb; pdb.set_trace()
             return True
         elif r and 'error' in r:
+	    import pdb;pdb.set_trace()
             raise osv.except_osv(_(u'Cancelling Validation'),
                                  _('Error: %s') % r['error'])
         else:
